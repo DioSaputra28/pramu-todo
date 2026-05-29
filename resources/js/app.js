@@ -391,3 +391,52 @@ if (scanPage) {
     // diizinkan, kamera akan langsung aktif pada kunjungan berikutnya.
     startCamera();
 }
+
+// Salin / bagikan daftar pesanan supplier (barang stok gudang habis).
+const shareButton = document.querySelector('[data-share-order]');
+
+if (shareButton) {
+    const orderText = shareButton.dataset.shareOrder ?? '';
+
+    const flashLabel = (message) => {
+        const original = shareButton.dataset.originalLabel ?? shareButton.textContent.trim();
+        shareButton.dataset.originalLabel = original;
+        const labelEl = shareButton.querySelector('[data-share-label]');
+        if (labelEl) {
+            labelEl.textContent = message;
+            window.setTimeout(() => {
+                labelEl.textContent = original;
+            }, 1800);
+        }
+    };
+
+    shareButton.addEventListener('click', async () => {
+        if (!orderText) {
+            return;
+        }
+
+        // Gunakan Web Share API bila tersedia (umumnya di perangkat mobile).
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Daftar Pesanan Supplier',
+                    text: orderText,
+                });
+                return;
+            } catch (error) {
+                // Dibatalkan user atau gagal; lanjut ke fallback salin.
+                if (error?.name === 'AbortError') {
+                    return;
+                }
+            }
+        }
+
+        try {
+            await navigator.clipboard.writeText(orderText);
+            flashLabel('Tersalin!');
+        } catch (error) {
+            console.error(error);
+            flashLabel('Gagal menyalin');
+        }
+    });
+}

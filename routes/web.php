@@ -9,6 +9,8 @@ use App\Http\Controllers\MasterStoreController;
 use App\Http\Controllers\MasterUpdateController;
 use App\Http\Controllers\RestockItemCompleteController;
 use App\Http\Controllers\RestockItemDestroyController;
+use App\Http\Controllers\RestockItemOutOfStockController;
+use App\Http\Controllers\RestockItemRestoreController;
 use App\Http\Controllers\RestockItemStoreController;
 use App\Http\Controllers\RestockItemUpdateController;
 use App\Http\Controllers\RestockListCompleteController;
@@ -27,6 +29,8 @@ Route::get('/master/{product}/edit', MasterEditController::class)->name('master.
 Route::patch('/master/{product}', MasterUpdateController::class)->name('master.update');
 Route::post('/restock-items', RestockItemStoreController::class)->name('restock-items.store');
 Route::patch('/restock-items/{restockItem}/complete', RestockItemCompleteController::class)->name('restock-items.complete');
+Route::patch('/restock-items/{restockItem}/out-of-stock', RestockItemOutOfStockController::class)->name('restock-items.out-of-stock');
+Route::patch('/restock-items/{restockItem}/restore', RestockItemRestoreController::class)->name('restock-items.restore');
 Route::patch('/restock-items/{restockItem}', RestockItemUpdateController::class)->name('restock-items.update');
 Route::delete('/restock-items/{restockItem}', RestockItemDestroyController::class)->name('restock-items.destroy');
 Route::post('/restock-lists/complete', RestockListCompleteController::class)->name('restock-lists.complete');

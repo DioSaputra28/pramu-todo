@@ -34,6 +34,8 @@
                             <span class="text-sm font-semibold text-on-background tabular-nums">x{{ $item->quantity }}</span>
                             @if ($item->status === 'done')
                                 <span class="material-symbols-outlined text-primary text-[20px]" title="Selesai diambil">check_circle</span>
+                            @elseif ($item->status === 'out_of_stock')
+                                <span class="material-symbols-outlined text-tertiary text-[20px]" title="Stok gudang habis">production_quantity_limits</span>
                             @else
                                 <span class="material-symbols-outlined text-outline text-[20px]" title="Belum diambil">radio_button_unchecked</span>
                             @endif
