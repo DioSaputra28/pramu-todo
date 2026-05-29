@@ -7,6 +7,16 @@ if (scanPage) {
     const statusText = document.getElementById('scanStatus');
     const resultText = document.getElementById('scanResult');
     const buttonLabel = document.getElementById('cameraLabel');
+    const itemCountText = document.getElementById('scanItemCount');
+    const latestItemText = document.getElementById('scanLatestItem');
+    const latestWrapper = document.getElementById('scanLatestWrapper');
+    const toastContainer = document.getElementById('toastContainer');
+
+    const restockUrl = scanPage.dataset.restockUrl;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+    // Ignore the same barcode if rescanned within this window (ms).
+    const SCAN_COOLDOWN_MS = 2000;
 
     let stream = null;
     let detector = null;
@@ -14,7 +24,9 @@ if (scanPage) {
     let zxingReader = null;
     let zxingControls = null;
     let lastValue = null;
+    let lastScanAt = 0;
     let scanning = false;
+    let sending = false;
 
     const barcodeFormats = [
         'ean_13',
@@ -58,6 +70,73 @@ if (scanPage) {
         }
     };
 
+    const toastStyles = {
+        success: 'bg-primary-container text-on-primary',
+        error: 'bg-error text-on-error',
+        info: 'bg-inverse-surface text-inverse-on-surface',
+    };
+
+    const toastIcons = {
+        success: 'check_circle',
+        error: 'error',
+        info: 'info',
+    };
+
+    const showToast = (message, type = 'info', actionUrl = null, actionLabel = null) => {
+        if (!toastContainer) {
+            return;
+        }
+
+        const toast = document.createElement('div');
+        toast.className =
+            `pointer-events-auto w-full max-w-md rounded-lg px-4 py-3 shadow-lg flex items-center gap-3 text-sm font-semibold transition-all duration-300 translate-y-2 opacity-0 ${toastStyles[type] ?? toastStyles.info}`;
+
+        const icon = document.createElement('span');
+        icon.className = 'material-symbols-outlined text-[20px] shrink-0';
+        icon.textContent = toastIcons[type] ?? toastIcons.info;
+        toast.appendChild(icon);
+
+        const text = document.createElement('span');
+        text.className = 'flex-1';
+        text.textContent = message;
+        toast.appendChild(text);
+
+        if (actionUrl) {
+            const link = document.createElement('a');
+            link.href = actionUrl;
+            link.className = 'underline underline-offset-2 shrink-0';
+            link.textContent = actionLabel ?? 'Tambah';
+            toast.appendChild(link);
+        }
+
+        toastContainer.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.classList.remove('translate-y-2', 'opacity-0');
+        });
+
+        const dismissDelay = actionUrl ? 5000 : 2500;
+        window.setTimeout(() => {
+            toast.classList.add('translate-y-2', 'opacity-0');
+            window.setTimeout(() => toast.remove(), 300);
+        }, dismissDelay);
+    };
+
+    const updateItemCount = (count) => {
+        if (itemCountText && typeof count === 'number') {
+            itemCountText.textContent = count;
+        }
+    };
+
+    const updateLatestItem = (name) => {
+        if (latestItemText) {
+            latestItemText.textContent = name;
+        }
+        if (latestWrapper) {
+            latestWrapper.classList.remove('hidden');
+        }
+    };
+
     const stopCamera = () => {
         scanning = false;
         if (rafId) {
@@ -86,12 +165,86 @@ if (scanPage) {
         setStatus('Kamera dimatikan.');
     };
 
-    const handleDetectedValue = (value) => {
-        if (value && value !== lastValue) {
-            lastValue = value;
-            setResult(value);
-            setStatus('Barcode terdeteksi.');
+    const sendBarcode = async (barcode) => {
+        if (!restockUrl) {
+            return;
         }
+
+        sending = true;
+        setStatus('Mengirim barcode...');
+
+        try {
+            const response = await fetch(restockUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({ barcode }),
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                const item = data.item ?? {};
+                const name = item.name ?? 'Produk';
+                showToast(`Ditambahkan: ${name} (x${item.quantity ?? 1})`, 'success');
+                updateItemCount(data.itemCount);
+                updateLatestItem(name);
+                setStatus('Arahkan barcode ke kotak.');
+                return;
+            }
+
+            if (response.status === 404) {
+                showToast(
+                    data.message ?? 'Barcode belum terdaftar.',
+                    'error',
+                    data.addUrl ?? null,
+                    'Daftarkan',
+                );
+                setStatus('Barcode belum terdaftar.');
+                return;
+            }
+
+            if (response.status === 422) {
+                showToast('Barcode tidak valid.', 'error');
+                setStatus('Barcode tidak valid.');
+                return;
+            }
+
+            showToast('Gagal menambahkan item. Coba lagi.', 'error');
+            setStatus('Terjadi kesalahan.');
+        } catch (error) {
+            console.error(error);
+            showToast('Gagal terhubung ke server.', 'error');
+            setStatus('Gagal terhubung ke server.');
+        } finally {
+            sending = false;
+        }
+    };
+
+    const handleDetectedValue = (value) => {
+        const barcode = (value ?? '').trim();
+        if (!barcode) {
+            return;
+        }
+
+        const now = Date.now();
+        if (barcode === lastValue && now - lastScanAt < SCAN_COOLDOWN_MS) {
+            return;
+        }
+
+        if (sending) {
+            return;
+        }
+
+        lastValue = barcode;
+        lastScanAt = now;
+        setResult(barcode);
+        setStatus('Barcode terdeteksi.');
+        sendBarcode(barcode);
     };
 
     const scanLoop = async () => {
@@ -125,7 +278,7 @@ if (scanPage) {
             setStatus('Menggunakan fallback scanner.');
 
             zxingControls = await zxingReader.decodeFromVideoDevice(
-                null,
+                undefined,
                 video,
                 (result) => {
                     if (result) {
@@ -182,6 +335,7 @@ if (scanPage) {
 
             setResult('-');
             lastValue = null;
+            lastScanAt = 0;
             startCamera();
         });
     }

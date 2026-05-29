@@ -5,7 +5,11 @@
 @section('content')
     @include('web.layouts.topbar', ['title' => 'Scan Barang'])
 
-    <main class="px-4 flex flex-col gap-4 max-w-md mx-auto w-full" data-scan-page>
+    <main
+        class="px-4 flex flex-col gap-4 max-w-md mx-auto w-full"
+        data-scan-page
+        data-restock-url="{{ route('restock-items.store') }}"
+    >
         <section class="flex flex-col gap-3">
             <div
                 class="rounded-xl border border-primary-container bg-surface-container-lowest p-4 flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden group"
@@ -47,19 +51,31 @@
             </div>
             <div class="flex items-center justify-between text-xs text-secondary">
                 <span>Total item to-do hari ini</span>
-                <span class="text-primary font-semibold">{{ $itemCount }}</span>
+                <span class="text-primary font-semibold" id="scanItemCount">{{ $itemCount }}</span>
             </div>
             @if ($latestItem)
                 <div class="text-xs text-secondary">
                     Terakhir discan:
-                    <span class="text-on-background font-semibold">
+                    <span class="text-on-background font-semibold" id="scanLatestItem">
                         {{ $latestItem->product?->name ?? 'Produk tidak ditemukan' }}
                     </span>
+                </div>
+            @else
+                <div class="text-xs text-secondary hidden" id="scanLatestWrapper">
+                    Terakhir discan:
+                    <span class="text-on-background font-semibold" id="scanLatestItem"></span>
                 </div>
             @endif
         </section>
 
     </main>
+
+    <div
+        id="toastContainer"
+        class="fixed inset-x-0 bottom-[120px] z-50 flex flex-col items-center gap-2 px-4 pointer-events-none"
+        aria-live="polite"
+        aria-atomic="true"
+    ></div>
 
     @include('web.layouts.navbar', ['activeTab' => 'scan'])
 @endsection
