@@ -6,6 +6,15 @@
     @include('web.layouts.topbar', ['title' => 'Minimarket Manager'])
 
     <main class="pt-[72px] pb-[104px]">
+        @if (session('status'))
+            <div class="px-4 mb-4">
+                <div class="rounded-lg bg-primary-container text-on-primary px-4 py-3 text-sm flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                    {{ session('status') }}
+                </div>
+            </div>
+        @endif
+
         <div class="px-4 mb-4">
             <h2 class="text-xl font-bold text-on-background mb-3">Master Produk</h2>
             <div class="relative flex items-center h-12 border border-outline-variant rounded-lg bg-surface-container-lowest focus-within:bg-secondary-container transition-colors">
