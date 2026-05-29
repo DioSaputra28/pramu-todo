@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tambah Produk - Minimarket Manager</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#151c26",
+                    "primary-container": "#1e5bff",
+                    "outline-variant": "#c3c5d9",
+                    "surface-container-highest": "#e1e1ef",
+                    "on-tertiary-fixed": "#390c00",
+                    "on-background": "#191b24",
+                    "on-tertiary-fixed-variant": "#832700",
+                    "on-surface-variant": "#434656",
+                    "primary-fixed": "#dce1ff",
+                    "secondary-container": "#dce3f1",
+                    "surface-bright": "#faf8ff",
+                    "primary-fixed-dim": "#b7c4ff",
+                    "on-tertiary-container": "#ffebe5",
+                    "surface-container-high": "#e7e7f4",
+                    "surface-tint": "#004cec",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#b7c4ff",
+                    "surface": "#faf8ff",
+                    "secondary": "#575f6a",
+                    "tertiary": "#992f00",
+                    "background": "#faf8ff",
+                    "outline": "#737688",
+                    "on-surface": "#191b24",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e1e1ef",
+                    "on-secondary-fixed-variant": "#404752",
+                    "tertiary-container": "#c33e00",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#ecedff",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-container": "#5d6570",
+                    "surface-container": "#ededfa",
+                    "inverse-surface": "#2e303a",
+                    "primary": "#0044d3",
+                    "on-primary-fixed": "#001551",
+                    "secondary-fixed-dim": "#c0c7d4",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f3f2ff",
+                    "surface-dim": "#d9d9e6",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#dce3f1",
+                    "on-primary-fixed-variant": "#0039b5",
+                    "inverse-on-surface": "#f0f0fd",
+                    "tertiary-fixed-dim": "#ffb59c",
+                    "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "xl": "24px",
+                    "xs": "8px",
+                    "gutter": "12px",
+                    "md": "12px",
+                    "lg": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": [
+                            "Inter"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "headline-lg": [
+                            "Inter"
+                    ],
+                    "label-bold": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "headline-md": [
+                            "18px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-bold": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-surface border-b border-outline-variant fixed top-0 left-0 w-full z-50 h-14 flex justify-between items-center px-margin-mobile">
+<button class="text-primary hover:bg-secondary-container active:scale-95 transition-all p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary truncate px-4">Tambah Produk</h1>
+<button class="text-primary hover:bg-secondary-container active:scale-95 transition-all p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="pt-20 px-margin-mobile flex flex-col gap-lg max-w-md mx-auto">
+<!-- Barcode Read-only Field -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-secondary">Barcode</label>
+<div class="h-12 bg-surface-container-low border border-outline-variant rounded-DEFAULT flex items-center px-md text-secondary font-body-md text-body-md select-none">
+<span class="material-symbols-outlined mr-2 text-outline" data-icon="qr_code_scanner" style="font-variation-settings: 'FILL' 0; stroke-width: 2px;">qr_code_scanner</span>
+                899123456789
+            </div>
+</div>
+<!-- Nama Barang Form Field -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface" for="nama_barang">Nama Barang</label>
+<input class="h-12 bg-surface border border-outline-variant rounded-DEFAULT px-md text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary placeholder:text-outline focus:bg-[#EAF1FF] transition-colors" id="nama_barang" name="nama_barang" placeholder="Masukkan nama barang" type="text"/>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-md mt-lg">
+<button class="w-full h-12 bg-[#1E5BFF] text-white font-headline-md text-headline-md rounded-DEFAULT flex items-center justify-center active:scale-[0.98] transition-transform">
+                Simpan
+            </button>
+<button class="w-full h-12 text-[#1E5BFF] font-label-bold text-label-bold rounded-DEFAULT flex items-center justify-center hover:bg-surface-container-low active:bg-secondary-container transition-colors">
+                Batal
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface border-t border-outline-variant fixed bottom-0 left-0 w-full z-50 h-16 flex justify-around items-center pb-safe md:hidden">
+<button class="flex flex-col items-center justify-center text-secondary hover:bg-surface-container-low active:opacity-80 transition-all flex-1 h-full">
+<span class="material-symbols-outlined mb-1" data-icon="qr_code_scanner" style="font-variation-settings: 'FILL' 0; stroke-width: 2px;">qr_code_scanner</span>
+<span class="font-label-sm text-label-sm">Scan</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary hover:bg-surface-container-low active:opacity-80 transition-all flex-1 h-full">
+<span class="material-symbols-outlined mb-1" data-icon="checklist" style="font-variation-settings: 'FILL' 0; stroke-width: 2px;">checklist</span>
+<span class="font-label-sm text-label-sm">To-Do</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary font-bold hover:bg-surface-container-low active:opacity-80 transition-all flex-1 h-full">
+<span class="material-symbols-outlined mb-1" data-icon="inventory_2" style="font-variation-settings: 'FILL' 1; stroke-width: 2px;">inventory_2</span>
+<span class="font-label-bold text-label-bold">Master</span>
+</button>
+</nav>
+</body></html>
