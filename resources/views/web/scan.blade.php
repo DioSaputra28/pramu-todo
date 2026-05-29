@@ -49,6 +49,27 @@
                 <span id="scanStatus">Tekan Aktifkan Kamera untuk mulai.</span>
                 <span class="text-primary font-semibold" id="scanResult">-</span>
             </div>
+
+            <div class="flex flex-col gap-2 border-t border-outline-variant pt-3">
+                <label class="text-xs text-secondary" for="manualBarcode">Input barcode manual</label>
+                <form id="manualForm" class="flex items-center gap-2">
+                    <input
+                        class="flex-1 h-11 bg-surface-container-lowest border border-outline-variant rounded-lg px-3 text-on-background text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary placeholder:text-outline transition-colors"
+                        id="manualBarcode"
+                        name="manualBarcode"
+                        type="text"
+                        inputmode="numeric"
+                        placeholder="Ketik barcode lalu Enter"
+                        autocomplete="off"
+                    />
+                    <button
+                        class="h-11 px-4 bg-primary-container text-on-primary text-sm font-semibold rounded-lg active:scale-[0.98] transition-transform shrink-0"
+                        type="submit"
+                    >
+                        Tambah
+                    </button>
+                </form>
+            </div>
             <div class="flex items-center justify-between text-xs text-secondary">
                 <span>Total item to-do hari ini</span>
                 <span class="text-primary font-semibold" id="scanItemCount">{{ $itemCount }}</span>

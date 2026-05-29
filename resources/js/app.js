@@ -11,6 +11,8 @@ if (scanPage) {
     const latestItemText = document.getElementById('scanLatestItem');
     const latestWrapper = document.getElementById('scanLatestWrapper');
     const toastContainer = document.getElementById('toastContainer');
+    const manualForm = document.getElementById('manualForm');
+    const manualInput = document.getElementById('manualBarcode');
 
     const restockUrl = scanPage.dataset.restockUrl;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
@@ -346,6 +348,30 @@ if (scanPage) {
             lastValue = null;
             lastScanAt = 0;
             startCamera();
+        });
+    }
+
+    if (manualForm && manualInput) {
+        manualForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const barcode = manualInput.value.trim();
+            if (!barcode) {
+                return;
+            }
+
+            if (sending) {
+                return;
+            }
+
+            // Reset cooldown agar input manual selalu diproses,
+            // termasuk barcode yang sama dengan scan terakhir.
+            lastValue = barcode;
+            lastScanAt = Date.now();
+            setResult(barcode);
+            sendBarcode(barcode);
+            manualInput.value = '';
+            manualInput.focus();
         });
     }
 

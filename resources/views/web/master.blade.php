@@ -17,8 +17,10 @@
 
         <div class="px-4 mb-4">
             <h2 class="text-xl font-bold text-on-background mb-3">Master Produk</h2>
-            <div class="relative flex items-center h-12 border border-outline-variant rounded-lg bg-surface-container-lowest focus-within:bg-secondary-container transition-colors">
-                <span class="material-symbols-outlined text-outline ml-3 mr-2 pointer-events-none">search</span>
+            <form action="{{ route('master.index') }}" method="GET" class="relative flex items-center h-12 border border-outline-variant rounded-lg bg-surface-container-lowest focus-within:bg-secondary-container transition-colors">
+                <button type="submit" class="flex items-center" aria-label="Cari">
+                    <span class="material-symbols-outlined text-outline ml-3 mr-2">search</span>
+                </button>
                 <input
                     class="w-full h-full bg-transparent border-none focus:ring-0 text-on-background text-sm placeholder:text-outline pr-3"
                     placeholder="Cari nama atau scan barcode..."
@@ -26,7 +28,12 @@
                     type="text"
                     value="{{ $query }}"
                 />
-            </div>
+                @if ($query !== '')
+                    <a href="{{ route('master.index') }}" class="text-outline pr-3" aria-label="Hapus pencarian">
+                        <span class="material-symbols-outlined">close</span>
+                    </a>
+                @endif
+            </form>
         </div>
 
         <div class="px-4 flex flex-col gap-3">
@@ -39,13 +46,17 @@
                             {{ $product->barcode }}
                         </span>
                     </div>
-                    <button class="text-primary p-2 active:scale-95 transition-transform" type="button" aria-label="Edit Product">
+                    <a href="{{ route('master.edit', $product) }}" class="text-primary p-2 active:scale-95 transition-transform" aria-label="Edit Product">
                         <span class="material-symbols-outlined">edit</span>
-                    </button>
+                    </a>
                 </div>
             @empty
                 <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 text-sm text-secondary">
-                    Belum ada produk yang terdaftar.
+                    @if ($query !== '')
+                        Tidak ada produk yang cocok dengan "{{ $query }}".
+                    @else
+                        Belum ada produk yang terdaftar.
+                    @endif
                 </div>
             @endforelse
         </div>
