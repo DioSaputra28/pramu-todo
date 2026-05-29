@@ -26,6 +26,7 @@ class TodoController extends Controller
             $items = RestockItem::query()
                 ->with(['product:id,name,barcode'])
                 ->where('restock_list_id', $restockList->id)
+                ->where('status', 'pending')
                 ->orderByDesc('scanned_at')
                 ->orderByDesc('id')
                 ->get();

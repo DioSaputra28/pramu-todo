@@ -6,6 +6,13 @@
     @include('web.layouts.topbar', ['title' => 'To-Do List'])
 
     <main class="px-4 flex flex-col gap-4 max-w-md mx-auto w-full">
+        @if (session('status'))
+            <div class="rounded-lg bg-primary-container text-on-primary px-4 py-3 text-sm flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                {{ session('status') }}
+            </div>
+        @endif
+
         <section class="flex flex-col gap-3">
             <div class="flex justify-between items-center">
                 <h2 class="text-lg font-bold text-on-background">Barang untuk diambil</h2>
@@ -25,12 +32,19 @@
                                 {{ $item->product?->barcode ?? '—' }}
                             </span>
                         </div>
-                        <button
-                            class="bg-primary-fixed text-primary text-xs font-semibold px-3 py-2 rounded border border-transparent hover:border-primary-container active:bg-primary-container active:text-on-primary transition-colors whitespace-nowrap"
-                            type="button"
+                        <form
+                            action="{{ route('restock-items.complete', $item) }}"
+                            method="POST"
                         >
-                            Selesai Ambil
-                        </button>
+                            @csrf
+                            @method('PATCH')
+                            <button
+                                class="bg-primary-fixed text-primary text-xs font-semibold px-3 py-2 rounded border border-transparent hover:border-primary-container active:bg-primary-container active:text-on-primary transition-colors whitespace-nowrap"
+                                type="submit"
+                            >
+                                Selesai Ambil
+                            </button>
+                        </form>
                     </div>
                 @empty
                     <div class="border border-outline-variant rounded-lg p-4 bg-surface-container-lowest text-sm text-secondary">
