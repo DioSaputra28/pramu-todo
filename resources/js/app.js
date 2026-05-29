@@ -27,6 +27,7 @@ if (scanPage) {
     let lastScanAt = 0;
     let scanning = false;
     let sending = false;
+    let cameraActive = false;
 
     const barcodeFormats = [
         'ean_13',
@@ -139,6 +140,7 @@ if (scanPage) {
 
     const stopCamera = () => {
         scanning = false;
+        cameraActive = false;
         if (rafId) {
             cancelAnimationFrame(rafId);
             rafId = null;
@@ -295,9 +297,15 @@ if (scanPage) {
 
     const startCamera = async () => {
         if (!navigator.mediaDevices?.getUserMedia) {
-            setStatus('Browser tidak mendukung akses kamera.');
+            if (!window.isSecureContext) {
+                setStatus('Kamera butuh HTTPS. Buka situs lewat https:// atau localhost.');
+            } else {
+                setStatus('Browser tidak mendukung akses kamera.');
+            }
             return;
         }
+
+        cameraActive = true;
 
         try {
             if ('BarcodeDetector' in window) {
@@ -322,6 +330,7 @@ if (scanPage) {
             await startZxing();
         } catch (error) {
             console.error(error);
+            cameraActive = false;
             setStatus('Tidak bisa mengakses kamera. Pastikan izin kamera diaktifkan.');
         }
     };
@@ -342,7 +351,17 @@ if (scanPage) {
 
     document.addEventListener('visibilitychange', () => {
         if (document.hidden && (stream || zxingControls)) {
+            const wasActive = cameraActive;
             stopCamera();
+            // Pertahankan niat untuk menyalakan ulang saat kembali ke tab.
+            cameraActive = wasActive;
+        } else if (!document.hidden && cameraActive && !stream && !zxingControls) {
+            startCamera();
         }
     });
+
+    // Otomatis nyalakan kamera saat halaman scan dibuka.
+    // Browser tetap menampilkan dialog izin pada kunjungan pertama; setelah
+    // diizinkan, kamera akan langsung aktif pada kunjungan berikutnya.
+    startCamera();
 }
